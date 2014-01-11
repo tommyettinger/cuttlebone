@@ -13,7 +13,7 @@ public class HerringboneDungeon
 {
     static public char[][][] herringbonesVert = new char[][][]
         {
-                    {
+            {
                             "##......%####.....##".toCharArray(),
                             "###.......###.....##".toCharArray(),
                             "..##......###%##....".toCharArray(),
@@ -844,6 +844,7 @@ public class HerringboneDungeon
                             "#..#..##..##..##.###".toCharArray(),
                             "####..######..######".toCharArray()
                     }
+     
         };
     
     static public char[][][] herringbonesHoriz = new char[][][]
@@ -2370,6 +2371,7 @@ public class HerringboneDungeon
                     }
                 }
             }
+            int tempNextFill = nextFillX;
             if ((40 + nextFillX) % (wide + 40) < nextFillX)
             {
                 switch (startingIndent)
@@ -2395,18 +2397,19 @@ public class HerringboneDungeon
             {
                 nextFillX += 40;
             }
-            if ((nextFillX + 40) < nextFillX)
+            if ((tempNextFill + 40) % (wide + 40) < tempNextFill)
             {
                 startingIndent = (startingIndent + 1) % 4;
             }
         }
         startingIndent = 1;
         nextFillY = 10;
+        nextFillX = 0;
         while (nextFillX <= wide + 30)
         {
             char[][] vert = herringbonesVert[rng.between(0,
                     herringbonesVert.length - 1)];
-            if ((nextFillX < wide + 10) && ((nextFillY <= high + 10)))
+            if ((nextFillX < wide + 30) && ((nextFillY < high + 30)))
             {
                 for (int i = 0; i < 10; i++)
                 {
@@ -2416,7 +2419,8 @@ public class HerringboneDungeon
                     }
                 }
             }
-            if ((40 + nextFillY) % (high + 40) < nextFillY)
+            int tempNextFill = nextFillY;
+            if ((nextFillY + 40) % (high + 40) < nextFillY)
             {
                 switch (startingIndent)
                 {
@@ -2441,7 +2445,7 @@ public class HerringboneDungeon
             {
                 nextFillY += 40;
             }
-            if ((nextFillY + 40) < nextFillY)
+            if ((tempNextFill + 40) % (high + 40) < tempNextFill)
             {
                 startingIndent = (startingIndent + 1) % 4;
             }
