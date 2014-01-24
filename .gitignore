@@ -3,6 +3,7 @@ target
 .settings
 .project
 .classpath
+.metadata/
 *.iml
 .idea
 *.jar
