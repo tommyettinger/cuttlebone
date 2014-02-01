@@ -3,7 +3,7 @@
 
     <groupId>com.squid</groupId>
     <artifactId>cuttlebone</artifactId>
-    <version>1.95.1</version>
+    <version>1.95.2</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -13,7 +13,6 @@
     </parent>
     
     <name>cuttlebone</name>
-    <description>Please refer to https://github.com/tommyettinger/cuttlebone .</description>
 
     <url>https://github.com/tommyettinger/cuttlebone</url>
 
@@ -152,4 +151,5 @@
     </build>
     <dependencies>
     </dependencies>
+    <description>A slimmed-down version of Eben Howard's library for dealing with grids, SquidLib, with some added features (like map generation) but with all display code removed.</description>
 </project>
