@@ -82,6 +82,53 @@ public class RayCastingFOV implements FOVSolver {
 
         return lightMap;
     }
+    public float[] calculateFOV(float[] map1D, int wide, int startx, int starty, float force, float decay, RadiusStrategy radiusStrategy) {
+        width = wide;
+        height = map1D.length / width;
+        this.map = new float[width][height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                this.map[x][y] = map1D[(y * width) + x];
+            }
+        }
+        this.force = force;
+        this.decay = decay;
+        this.fx = startx + 0.5f;
+        this.fy = starty + 0.5f;
+        this.rStrat = radiusStrategy;
+        lightMap = new float[width][height];
+
+        float maxRadius = force / decay + 1;
+
+        int left = (int) Math.max(0, startx - maxRadius);
+        int right = (int) Math.min(width - 1, startx + maxRadius);
+        int top = (int) Math.max(0, starty - maxRadius);
+        int bottom = (int) Math.min(height - 1, starty + maxRadius);
+
+        lightMap[startx][starty] = force;
+
+        //run rays out to edges
+        for (int x = left; x <= right; x++) {
+            runLineGroup(fx, fy, x, top);
+            runLineGroup(fx, fy, x, bottom);
+        }
+        for (int y = top; y <= bottom; y++) {
+            runLineGroup(fx, fy, left, y);
+            runLineGroup(fx, fy, right, y);
+        }
+
+        float[] light1D = new float[width * height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                light1D[(y * width) + x] = lightMap[x][y];
+            }
+        }
+        return light1D;
+    }
 
     /**
      * Runs rays from approximately the corners of the cells. This reduces

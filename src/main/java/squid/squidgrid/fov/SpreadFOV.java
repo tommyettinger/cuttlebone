@@ -1,6 +1,8 @@
 package squid.squidgrid.fov;
 
+import static squid.squidgrid.fov.TranslucenceWrapperFOV.RayType.PRIMARY;
 import squid.annotation.Beta;
+import squid.squidgrid.util.Direction;
 
 /**
  * Performs FOV by pushing values outwards from the source location. It will
@@ -64,6 +66,40 @@ public class SpreadFOV implements FOVSolver {
         lightSurroundings(startx, starty);
 
         return lightMap;
+    }
+
+    public float[] calculateFOV(float[] map1D, int wide, int startx, int starty, float force, float decay, RadiusStrategy rStrat) {
+        width = wide;
+        height = map1D.length / width;
+        this.map = new float[width][height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                this.map[x][y] = map1D[(y * width) + x];
+            }
+        }
+        this.decay = decay;
+        this.startx = startx;
+        this.starty = starty;
+        this.rStrat = rStrat;
+        radius = force / decay;//assume worst case of no resistance in tiles
+        
+        lightMap = new float[width][height];
+
+        lightMap[startx][starty] = force;//make the starting space full power
+
+        lightSurroundings(startx, starty);
+
+        float[] light1D = new float[width * height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                light1D[(y * width) + x] = lightMap[x][y];
+            }
+        }
+        return light1D;
     }
 
     private void lightSurroundings(int x, int y) {

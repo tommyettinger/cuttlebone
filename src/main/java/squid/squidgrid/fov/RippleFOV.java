@@ -163,6 +163,51 @@ public class RippleFOV implements FOVSolver {
         return lightMap;
     }
 
+    public float[] calculateFOV(float[] map1D, int wide, int startx, int starty, float force, float decay, RadiusStrategy rStrat) {
+        width = wide;
+        height = map1D.length / width;
+        this.map = new float[width][height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                this.map[x][y] = map1D[(y * width) + x];
+            }
+        }
+        this.startx = startx;
+        this.starty = starty;
+        this.rStrat = rStrat;
+        radius = force / decay;//assume worst case of no resistance in tiles
+
+        if (map.length != width || map[0].length != height) {
+            width = map.length;
+            height = map[0].length;
+            lightMap = new float[width][height];
+            indirect = new boolean[width][height];
+        } else {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    lightMap[x][y] = 0f;//mark as unlit
+                    indirect[x][y] = false;
+                }
+            }
+        }
+
+        lightMap[startx][starty] = force;//make the starting space full power
+
+        lightSurroundings(startx, starty);
+
+        float[] light1D = new float[width * height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                light1D[(y * width) + x] = lightMap[x][y];
+            }
+        }
+        return light1D;
+    }
+
     private void lightSurroundings(int x, int y) {
         if (lightMap[x][y] <= 0 || indirect[x][y]) {
             return;//no light to spread

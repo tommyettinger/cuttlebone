@@ -41,6 +41,38 @@ public class ShadowFOV implements FOVSolver {
         return lightMap;
     }
 
+    public float[] calculateFOV(float[] resistanceMap1D, int wide, int startx, int starty, float force, float decay, RadiusStrategy radiusStrategy) {
+        width = wide;
+        height = resistanceMap1D.length / width;
+        this.resistanceMap = new float[width][height];
+        this.startx = startx;
+        this.starty = starty;
+        this.force = force;
+        this.decay = decay;
+        this.rStrat = radiusStrategy;
+
+        width = resistanceMap.length;
+        height = resistanceMap[0].length;
+        lightMap = new float[width][height];
+        radius = (force / decay);
+
+        lightMap[startx][starty] = force;//light the starting cell
+        for (Direction d : Direction.DIAGONALS) {
+            castLight(1, 1.0f, 0.0f, 0, d.deltaX, d.deltaY, 0);
+            castLight(1, 1.0f, 0.0f, d.deltaX, 0, 0, d.deltaY);
+        }
+
+        float[] light1D = new float[width * height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                light1D[(y * width) + x] = lightMap[x][y];
+            }
+        }
+        return light1D;
+    }
+
     private void castLight(int row, float start, float end, int xx, int xy, int yx, int yy) {
 
         float newStart = 0.0f;

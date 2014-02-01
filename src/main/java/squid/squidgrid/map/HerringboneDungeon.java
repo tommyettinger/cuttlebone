@@ -3,7 +3,9 @@
  */
 package squid.squidgrid.map;
 
-import java.io.File;
+//import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,9 +17,11 @@ import squid.squidmath.RNG;
  */
 public class HerringboneDungeon
 {
-    private Scanner vertScanner = new Scanner(getClass().getResourceAsStream("/herringbonesVert.txt")).useDelimiter("\n\n");
+    private InputStream verticalStream = getClass().getResourceAsStream("/herringbonesVert.txt");
+    private InputStream horizontalStream = getClass().getResourceAsStream("/herringbonesHoriz.txt");
+    private Scanner vertScanner;
     public ArrayList<char[][]> herringbonesVert = new ArrayList<char[][]>(128);
-    private Scanner horizScanner = new Scanner(getClass().getResourceAsStream("/herringbonesHoriz.txt")).useDelimiter("\n\n");
+    private Scanner horizScanner;
     public ArrayList<char[][]> herringbonesHoriz = new ArrayList<char[][]>(128);
     private char[][] shown;
     public int wide;
@@ -34,10 +38,25 @@ public class HerringboneDungeon
     {
         this(wide, high, new RNG());
     }
-    
     public HerringboneDungeon(int wide, int high, RNG random)
     {
+        this(wide, high, random, null, null);
+    }
 
+    public HerringboneDungeon(int wide, int high, InputStream horizStream, InputStream vertStream)
+    {
+        this(wide, high, new RNG(), horizStream, vertStream);
+    }
+    public HerringboneDungeon(int wide, int high, RNG random, InputStream horizStream, InputStream vertStream)
+    {
+        if(horizStream == null)
+            horizStream = horizontalStream;
+        if(vertStream == null)
+            vertStream = verticalStream;
+        vertScanner = new Scanner(vertStream);
+        vertScanner.useDelimiter("\n\n");
+        horizScanner = new Scanner(horizStream);
+        horizScanner.useDelimiter("\n\n");
         try {
             while (vertScanner.hasNext()) {
                 String[] nx = vertScanner.next().split("\n");
@@ -192,17 +211,50 @@ public class HerringboneDungeon
                 }
             }
         }
-        
+        try
+        {
+            horizStream.close();
+            vertStream.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
-    
+
     public char[][] getShown()
     {
         return shown;
     }
-    
+    public char[] get1DShown()
+    {
+        char[] shown1D = new char[wide * high];
+        for(int x = 0; x < wide; x++)
+        {
+            for(int y = 0; y < high; y++)
+            {
+                shown1D[(y * wide) + x] = shown[x][y];
+            }
+        }
+        return shown1D;
+    }
+
     public void setShown(char[][] shown)
     {
+        this.wide = shown.length;
+        this.high = (this.wide > 0) ? shown[0].length : 0;
         this.shown = shown;
+    }
+    public void set1DShown(char[] shown, int wide)
+    {
+        this.wide = wide;
+        this.high = shown.length / wide;
+        for(int x = 0; x < wide; x++)
+        {
+            for(int y = 0; y < high; y++)
+            {
+                this.shown[x][y] = shown[(y * wide) + x];
+            }
+        }
     }
     
     public String toString()

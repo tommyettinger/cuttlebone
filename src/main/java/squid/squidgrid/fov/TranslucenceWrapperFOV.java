@@ -55,6 +55,39 @@ public class TranslucenceWrapperFOV implements FOVSolver {
 
         return lightMap;
     }
+    public float[] calculateFOV(float[] resistanceMap1D, int wide, int startx, int starty, float force, float decay, RadiusStrategy radiusStrategy) {
+        width = wide;
+        height = resistanceMap1D.length / width;
+        this.resistanceMap = new float[width][height];
+        this.startx = startx;
+        this.starty = starty;
+        this.decay = decay;
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                this.resistanceMap[x][y] = resistanceMap1D[(y * width) + x];
+            }
+        }
+        this.rStrat = radiusStrategy;
+        lightMap = new float[width][height];
+        shadowMap = fov.calculateFOV(resistanceMap, startx, starty, force, decay, radiusStrategy);
+
+        lightMap[startx][starty] = force;//start out at full force
+        for (Direction dir : Direction.OUTWARDS) {
+            pushLight(startx + dir.deltaX, starty + dir.deltaY, force + decay, dir, dir, PRIMARY);
+        }
+
+        float[] light1D = new float[width * height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                light1D[(y * width) + x] = lightMap[x][y];
+            }
+        }
+        return light1D;
+    }
 
     /**
      * Pushes light outwards based on the light coming into this cell.
