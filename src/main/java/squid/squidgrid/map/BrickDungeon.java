@@ -1,9 +1,5 @@
-/**
- * 
- */
 package squid.squidgrid.map;
 
-//import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,12 +11,12 @@ import squid.squidmath.RNG;
  * @author Tommy Ettinger
  * 
  */
-public class HerringboneDungeon
+public class BrickDungeon
 {
     private InputStream verticalStream = getClass().getResourceAsStream(
-            "/herringbonesVert.txt");
+            "/centeredVert.txt");
     private InputStream horizontalStream = getClass().getResourceAsStream(
-            "/herringbonesHoriz.txt");
+            "/centeredHoriz.txt");
     private Scanner vertScanner;
     public ArrayList<char[][]> herringbonesVert = new ArrayList<char[][]>(128);
     private Scanner horizScanner;
@@ -31,34 +27,34 @@ public class HerringboneDungeon
     public boolean colorful;
     private RNG rng;
     
-    public HerringboneDungeon()
+    public BrickDungeon()
     {
         this(20, 80);
     }
     
-    public HerringboneDungeon(int wide, int high)
+    public BrickDungeon(int wide, int high)
     {
         this(wide, high, new RNG());
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random)
+    public BrickDungeon(int wide, int high, RNG random)
     {
         this(wide, high, random, null, null);
     }
     
-    public HerringboneDungeon(int wide, int high, InputStream horizStream,
+    public BrickDungeon(int wide, int high, InputStream horizStream,
             InputStream vertStream)
     {
         this(wide, high, new RNG(), horizStream, vertStream);
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random,
+    public BrickDungeon(int wide, int high, RNG random,
             InputStream horizStream, InputStream vertStream)
     {
         this(wide, high, random, horizStream, vertStream, false);
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random,
+    public BrickDungeon(int wide, int high, RNG random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
         if (horizStream == null) horizStream = horizontalStream;
@@ -112,11 +108,11 @@ public class HerringboneDungeon
         rng = random;
         // char[][] base = herringbonesHoriz[rng.between(0,
         // herringbonesHoriz.length - 1)];
-        char[][] outer = new char[wide + 40][high + 40];
+        char[][] outer = new char[wide + 20][high];
         this.shown = new char[wide][high];
-        for (int i = 0; i < wide + 40; i++)
+        for (int i = 0; i < wide + 20; i++)
         {
-            for (int j = 0; j < high + 40; j++)
+            for (int j = 0; j < high; j++)
             {
                 outer[i][j] = '#';
             }
@@ -124,12 +120,12 @@ public class HerringboneDungeon
         int nextFillX = 0;
         int nextFillY = 0;
         int startingIndent = 0;
-        while ((nextFillX < wide + 40) && ((nextFillY < 30 + high)))
+        while ((nextFillY < high))
         {
             char[][] horiz = herringbonesHoriz.get(rng.between(0,
                     herringbonesHoriz.size() - 1));
             int randColor = (colorful) ? random.between(1, 7) * 128 : 0;
-            if ((nextFillX < 20 + wide) && ((nextFillY < 30 + high)))
+            if ((nextFillX < 20 + wide) && ((nextFillY < high)))
             {
                 for (int i = 0; i < 20; i++)
                 {
@@ -139,84 +135,15 @@ public class HerringboneDungeon
                     }
                 }
             }
-            int tempNextFill = nextFillX;
-            if ((40 + nextFillX) % (wide + 40) < nextFillX)
+            //int tempNextFill = nextFillX;
+            if ((20 + nextFillX) % (wide + 10) < nextFillX)
             {
-                switch (startingIndent)
-                {
-                case 0:
-                    nextFillX = 10;
-                    nextFillY += 10;
-                    break;
-                case 1:
-                    nextFillX = 20;
-                    nextFillY += 10;
-                    break;
-                case 2:
-                    nextFillX = 30;
-                    nextFillY += 10;
-                    break;
-                case 3:
-                    nextFillX = 0;
-                    nextFillY += 10;
-                    break;
-                }
+                nextFillY += 10;
+                startingIndent = (startingIndent + 10) % 20;
+                nextFillX = startingIndent;
             } else
             {
-                nextFillX += 40;
-            }
-            if ((tempNextFill + 40) % (wide + 40) < tempNextFill)
-            {
-                startingIndent = (startingIndent + 1) % 4;
-            }
-        }
-        startingIndent = 1;
-        nextFillY = 10;
-        nextFillX = 0;
-        while (nextFillX <= wide + 30)
-        {
-            char[][] vert = herringbonesVert.get(rng.between(0,
-                    herringbonesVert.size() - 1));
-            int randColor = (colorful) ? random.between(10, 16) * 128 : 0;
-            if ((nextFillX < wide + 30) && ((nextFillY < high + 30)))
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    for (int j = 0; j < 20; j++)
-                    {
-                        outer[nextFillX + i][nextFillY + j] = (char) ((int) (vert[i][j]) + randColor);
-                    }
-                }
-            }
-            int tempNextFill = nextFillY;
-            if ((nextFillY + 40) % (high + 40) < nextFillY)
-            {
-                switch (startingIndent)
-                {
-                case 0:
-                    nextFillX += 10;
-                    nextFillY = 10;
-                    break;
-                case 1:
-                    nextFillX += 10;
-                    nextFillY = 20;
-                    break;
-                case 2:
-                    nextFillX += 10;
-                    nextFillY = 30;
-                    break;
-                case 3:
-                    nextFillX += 10;
-                    nextFillY = 0;
-                    break;
-                }
-            } else
-            {
-                nextFillY += 40;
-            }
-            if ((tempNextFill + 40) % (high + 40) < tempNextFill)
-            {
-                startingIndent = (startingIndent + 1) % 4;
+                nextFillX += 20;
             }
         }
         for (int i = 0; i < wide; i++)
@@ -228,7 +155,7 @@ public class HerringboneDungeon
                     shown[i][j] = '#';
                 } else
                 {
-                    shown[i][j] = outer[i + 20][j + 20];
+                    shown[i][j] = outer[i + 10][j];
                 }
             }
         }
