@@ -3,31 +3,32 @@ package squid.squidgrid.map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
+
 import squid.squidmath.RNG;
 
 /**
  * @author Tommy Ettinger
  * 
  */
-public class BrickDungeon
+public class BrickDungeon1D
 {
     private Scanner vertScanner;
-    public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(128);
+    public ArrayList<char[]> tilesVert = new ArrayList<char[]>(128);
     private Scanner horizScanner;
-    public ArrayList<char[][]> tilesHoriz = new ArrayList<char[][]>(128);
-    private char[][] shown;
+    public ArrayList<char[]> tilesHoriz = new ArrayList<char[]>(128);
+    private char[] shown;
     public int wide;
     public int high;
     public boolean colorful;
     private Random rng;
-    public static ArrayList<char[][]> tilesVertShared = null,
+    public static ArrayList<char[]> tilesVertShared = null,
             tilesHorizShared = null;
     private void loadStreams(InputStream horizStream, InputStream vertStream)
     {
         if (horizStream == null) horizStream = getClass().getResourceAsStream(
-                "/centeredHoriz.txt");
+                "/centeredVert.txt");
         if (vertStream == null) vertStream = getClass().getResourceAsStream(
                 "/centeredVert.txt");
         vertScanner = new Scanner(vertStream);
@@ -38,13 +39,8 @@ public class BrickDungeon
         {
             while (vertScanner.hasNext())
             {
-                String[] nx = vertScanner.next().split("\r?\n");
-                char[][] curr = new char[nx.length][nx[0].length()];
-                for (int i = 0; i < nx.length; i++)
-                {
-                    curr[i] = nx[i].toCharArray();
-                }
-                tilesVert.add(curr);
+                char[] nx = vertScanner.next().replace("\r\n", "").replace("\n", "").toCharArray();
+                tilesVert.add(nx);
             }
         } finally
         {
@@ -57,13 +53,8 @@ public class BrickDungeon
         {
             while (horizScanner.hasNext())
             {
-                String[] nx = horizScanner.next().split("\r?\n");
-                char[][] curr = new char[nx.length][nx[0].length()];
-                for (int i = 0; i < nx.length; i++)
-                {
-                    curr[i] = nx[i].toCharArray();
-                }
-                tilesHoriz.add(curr);
+                char[] nx = horizScanner.next().replace("\r\n", "").replace("\n", "").toCharArray();
+                tilesHoriz.add(nx);
             }
         } finally
         {
@@ -74,34 +65,34 @@ public class BrickDungeon
         }
     }
     
-    public BrickDungeon()
+    public BrickDungeon1D()
     {
         this(20, 80);
     }
     
-    public BrickDungeon(int wide, int high)
+    public BrickDungeon1D(int wide, int high)
     {
         this(wide, high, new RNG());
     }
     
-    public BrickDungeon(int wide, int high, Random random)
+    public BrickDungeon1D(int wide, int high, Random random)
     {
         this(wide, high, random, null, null);
     }
     
-    public BrickDungeon(int wide, int high, InputStream horizStream,
+    public BrickDungeon1D(int wide, int high, InputStream horizStream,
             InputStream vertStream)
     {
         this(wide, high, new RNG(), horizStream, vertStream);
     }
     
-    public BrickDungeon(int wide, int high, Random random,
+    public BrickDungeon1D(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream)
     {
         this(wide, high, random, horizStream, vertStream, false);
     }
     
-    public BrickDungeon(int wide, int high, Random random,
+    public BrickDungeon1D(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
 
@@ -118,13 +109,16 @@ public class BrickDungeon
         rng = random;
         // char[][] base = herringbonesHoriz[rng.between(0,
         // herringbonesHoriz.length - 1)];
-        char[][] outer = new char[wide + 20][high + 10];
-        this.shown = new char[wide][high];
-        for (int i = 0; i < wide + 20; i++)
+        int wider = wide + 20;
+        int higher = high + 10;
+        char[] outer = new char[wider * higher];
+        this.shown = new char[wide*high];
+        
+        for (int i = 0; i < wider; i++)
         {
-            for (int j = 0; j < high + 10; j++)
+            for (int j = 0; j < higher; j++)
             {
-                outer[i][j] = '#';
+                outer[i+ (wider*j)] = '#';
             }
         }
         int nextFillX = 0;
@@ -132,20 +126,20 @@ public class BrickDungeon
         int startingIndent = 0;
         while ((nextFillY < high))
         {
-            char[][] horiz = tilesHorizShared.get(rng.nextInt(tilesHorizShared.size()));
-            int randColor = (colorful) ? (random.nextInt(7) + 1) * 128 : 0;
+            char[] horiz = tilesHorizShared.get(rng.nextInt(tilesHorizShared.size()));
+            int randColor = (colorful) ? (random.nextInt(7)+1) * 128 : 0;
             if ((nextFillX < wide) && ((nextFillY < high)))
             {
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 10; j++)
                     {
-                        outer[nextFillX + i][nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
+                        outer[(nextFillX + i)+ wider * (nextFillY + j)] = (char) ((int) (horiz[i + 20*j]) + randColor);
                     }
                 }
             }
             //int tempNextFill = nextFillX;
-            if ((20 + nextFillX) % (wide + 10) < nextFillX)
+            if ((20 + nextFillX) % (wider - 10) < nextFillX)
             {
                 nextFillY += 10;
                 startingIndent = (startingIndent + 10) % 20;
@@ -161,10 +155,10 @@ public class BrickDungeon
             {
                 if (i == 0 || j == 0 || i == wide - 1 || j == high - 1)
                 {
-                    shown[i][j] = '#';
+                    shown[i+ wide*j] = '#';
                 } else
                 {
-                    shown[i][j] = outer[i + 10][j];
+                    shown[i+ wide*j] = outer[i + 10 + wider*j];
                 }
             }
         }
@@ -172,67 +166,67 @@ public class BrickDungeon
     
     public char[][] getShown()
     {
-        return shown;
-    }
-    
-    public char[] get1DShown()
-    {
-        char[] shown1D = new char[wide * high];
+        char[][] shown2D = new char[wide][high];
         for (int x = 0; x < wide; x++)
         {
             for (int y = 0; y < high; y++)
             {
-                shown1D[(y * wide) + x] = shown[x][y];
+                shown2D[x][y] = shown[(y * wide) + x];
             }
         }
-        return shown1D;
+        return shown2D;
+    }
+    
+    public char[] get1DShown()
+    {
+        return shown;
     }
     
     public void setShown(char[][] shown)
     {
         this.wide = shown.length;
         this.high = (this.wide > 0) ? shown[0].length : 0;
-        this.shown = shown;
+        for (int x = 0; x < wide; x++)
+        {
+            for (int y = 0; y < high; y++)
+            {
+                this.shown[x + (wide * y)] = shown[x][y];
+            }
+        }
     }
     
     public void set1DShown(char[] shown, int wide)
     {
         this.wide = wide;
         this.high = shown.length / wide;
-        for (int x = 0; x < wide; x++)
-        {
-            for (int y = 0; y < high; y++)
-            {
-                this.shown[x][y] = shown[(y * wide) + x];
-            }
-        }
+        this.shown = shown;
     }
     
     public String toString()
     {
         StringBuffer s = new StringBuffer("");
         int currentColor = 0;
-        for (int j = 0; j < shown[0].length; j++)
+        for (int j = 0; j < high; j++)
         {
-            for (int i = 0; i < shown.length; i++)
+            for (int i = 0; i < wide; i++)
             {
                 if (colorful)
                 {
-                    if(currentColor != (30 + (shown[i][j] / 128)) && ((int)shown[i][j] / 128) != 0)
+                    if(currentColor != (30 + (shown[i+wide*j] / 128)) && ((int)shown[i+wide*j] / 128) != 0)
                     {
-                        s.append("\u001B[0m\u001B[" + (30 + (shown[i][j] / 128)) + "m");
-                        currentColor = (30 + (shown[i][j] / 128));
+                        s.append("\u001B[0m\u001B[" + (30 + (shown[i+wide*j] / 128)) + "m");
+                        currentColor = (30 + (shown[i+wide*j] / 128));
                     }
-                    else if(((int)shown[i][j] / 128) == 0)
+                    else if(((int)shown[i+wide*j] / 128) == 0)
                     {
                         s.append("\u001B[0m");
                         currentColor = 0;
                     }
-                    s.append((char) (shown[i][j] % 128));
+                    s.append((char) (shown[i+wide*j] % 128));
                 }
                 else
                 {
-                    s.append(shown[i][j]);
+                    s.append(shown[i+wide*j]);
                 }
             }
             s.append('\n');

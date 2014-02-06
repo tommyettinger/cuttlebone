@@ -7,6 +7,7 @@ package squid.squidgrid.map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import squid.squidmath.RNG;
@@ -17,10 +18,6 @@ import squid.squidmath.RNG;
  */
 public class HerringboneDungeon
 {
-    private InputStream verticalStream = getClass().getResourceAsStream(
-            "/herringbonesVert.txt");
-    private InputStream horizontalStream = getClass().getResourceAsStream(
-            "/herringbonesHoriz.txt");
     private Scanner vertScanner;
     public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(128);
     private Scanner horizScanner;
@@ -29,13 +26,15 @@ public class HerringboneDungeon
     public int wide;
     public int high;
     public boolean colorful;
-    private RNG rng;
+    private Random rng;
     public static ArrayList<char[][]> tilesVertShared = null,
             tilesHorizShared = null;
     private void loadStreams(InputStream horizStream, InputStream vertStream)
     {
-        if (horizStream == null) horizStream = horizontalStream;
-        if (vertStream == null) vertStream = verticalStream;
+        if (horizStream == null) horizStream = getClass().getResourceAsStream(
+                "/herringbonesHoriz.txt");
+        if (vertStream == null) vertStream = getClass().getResourceAsStream(
+                "/herringbonesVert.txt");
         vertScanner = new Scanner(vertStream);
         vertScanner.useDelimiter("\r?\n\r?\n");
         horizScanner = new Scanner(horizStream);
@@ -90,7 +89,7 @@ public class HerringboneDungeon
         this(wide, high, new RNG());
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random)
+    public HerringboneDungeon(int wide, int high, Random random)
     {
         this(wide, high, random, null, null);
     }
@@ -101,13 +100,13 @@ public class HerringboneDungeon
         this(wide, high, new RNG(), horizStream, vertStream);
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random,
+    public HerringboneDungeon(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream)
     {
         this(wide, high, random, horizStream, vertStream, false);
     }
     
-    public HerringboneDungeon(int wide, int high, RNG random,
+    public HerringboneDungeon(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
         if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
@@ -137,9 +136,8 @@ public class HerringboneDungeon
         int startingIndent = 0;
         while ((nextFillX < wide + 40) && ((nextFillY < 30 + high)))
         {
-            char[][] horiz = tilesHorizShared.get(rng.between(0,
-                    tilesHorizShared.size() - 1));
-            int randColor = (colorful) ? random.between(1, 7) * 128 : 0;
+            char[][] horiz = tilesHorizShared.get(rng.nextInt(tilesHorizShared.size()));
+            int randColor = (colorful) ? (random.nextInt(7)+ 1) * 128 : 0;
             if ((nextFillX < 20 + wide) && ((nextFillY < 30 + high)))
             {
                 for (int i = 0; i < 20; i++)
@@ -186,9 +184,8 @@ public class HerringboneDungeon
         nextFillX = 0;
         while (nextFillX <= wide + 30)
         {
-            char[][] vert = tilesVertShared.get(rng.between(0,
-                    tilesVertShared.size() - 1));
-            int randColor = (colorful) ? random.between(10, 16) * 128 : 0;
+            char[][] vert = tilesVertShared.get(rng.nextInt(tilesVertShared.size()));
+            int randColor = (colorful) ? (random.nextInt(7) + 10) * 128 : 0;
             if ((nextFillX < wide + 30) && ((nextFillY < high + 30)))
             {
                 for (int i = 0; i < 10; i++)

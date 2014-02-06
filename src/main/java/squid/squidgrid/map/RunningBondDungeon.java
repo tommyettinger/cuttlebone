@@ -7,6 +7,7 @@ package squid.squidgrid.map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import squid.squidmath.RNG;
@@ -17,10 +18,6 @@ import squid.squidmath.RNG;
  */
 public class RunningBondDungeon
 {
-    private InputStream verticalStream = getClass().getResourceAsStream(
-            "/centeredVert.txt");
-    private InputStream horizontalStream = getClass().getResourceAsStream(
-            "/centeredHoriz.txt");
     private Scanner vertScanner;
     public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(128);
     private Scanner horizScanner;
@@ -31,12 +28,14 @@ public class RunningBondDungeon
     public int wide;
     public int high;
     public boolean colorful;
-    private RNG rng;
+    private Random rng;
     
     private void loadStreams(InputStream horizStream, InputStream vertStream)
     {
-        if (horizStream == null) horizStream = horizontalStream;
-        if (vertStream == null) vertStream = verticalStream;
+        if (horizStream == null) horizStream = getClass().getResourceAsStream(
+                "/centeredHoriz.txt");
+        if (vertStream == null) vertStream = getClass().getResourceAsStream(
+                "/centeredVert.txt");
         vertScanner = new Scanner(vertStream);
         vertScanner.useDelimiter("\r?\n\r?\n");
         horizScanner = new Scanner(horizStream);
@@ -91,7 +90,7 @@ public class RunningBondDungeon
         this(wide, high, new RNG());
     }
     
-    public RunningBondDungeon(int wide, int high, RNG random)
+    public RunningBondDungeon(int wide, int high, Random random)
     {
         this(wide, high, random, null, null);
     }
@@ -102,13 +101,13 @@ public class RunningBondDungeon
         this(wide, high, new RNG(), horizStream, vertStream);
     }
     
-    public RunningBondDungeon(int wide, int high, RNG random,
+    public RunningBondDungeon(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream)
     {
         this(wide, high, random, horizStream, vertStream, false);
     }
     
-    public RunningBondDungeon(int wide, int high, RNG random,
+    public RunningBondDungeon(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
         if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
@@ -144,9 +143,8 @@ public class RunningBondDungeon
                     && (nextFillX > 0) && (nextFillY > 0))
             {
                 
-                char[][] horiz = tilesHorizShared.get(rng.between(0,
-                        tilesHorizShared.size() - 1));
-                int randColor = (colorful) ? random.between(1, 6) * 128 : 0;
+                char[][] horiz = tilesHorizShared.get(rng.nextInt(tilesHorizShared.size()));
+                int randColor = (colorful) ? (random.nextInt(6) + 1) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 10; j++)
@@ -154,9 +152,9 @@ public class RunningBondDungeon
                         outer[nextFillX + i][nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
                     }
                 }
-                horiz = tilesHorizShared.get(rng.between(0,
-                        tilesHorizShared.size() - 1));
-                randColor = (colorful) ? random.between(1, 6) * 128 : 0;
+                horiz = tilesHorizShared.get(rng.nextInt(
+                        tilesHorizShared.size()));
+                randColor = (colorful) ? (random.nextInt(6) + 1) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 10; j++)
@@ -191,9 +189,8 @@ public class RunningBondDungeon
                     && (nextFillX > 0) && (nextFillY > 0))
             {
                 
-                char[][] vert = tilesVertShared.get(rng.between(0,
-                        tilesVertShared.size() - 1));
-                int randColor = (colorful) ? random.between(11, 16) * 128 : 0;
+                char[][] vert = tilesVertShared.get(rng.nextInt(tilesVertShared.size()));
+                int randColor = (colorful) ? (random.nextInt(6) + 11) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -201,9 +198,8 @@ public class RunningBondDungeon
                         outer[nextFillX + i][nextFillY + j] = (char) ((int) (vert[i][j]) + randColor);
                     }
                 }
-                vert = tilesVertShared.get(rng.between(0,
-                        tilesVertShared.size() - 1));
-                randColor = (colorful) ? random.between(11, 16) * 128 : 0;
+                vert = tilesVertShared.get(rng.nextInt(tilesVertShared.size()));
+                randColor = (colorful) ? (random.nextInt(6) + 11) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
                     for (int j = 0; j < 20; j++)
