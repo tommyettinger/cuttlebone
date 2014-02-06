@@ -9,7 +9,7 @@ import squid.squidgrid.map.BrickDungeon;
 import squid.squidgrid.map.BrickDungeon1D;
 import squid.squidgrid.map.HerringboneDungeon;
 import squid.squidgrid.map.RunningBondDungeon;
-import squid.squidmath.RNG;
+import squid.squidmath.XorRNG;
 
 public class DungeonTest
 {
@@ -25,7 +25,7 @@ public class DungeonTest
                     15, 17, 1, 57, -100, -77, 78, 86, 66, -120, 42, 93, 19,
                     127, -127, -2
             };
-        Random random = new Random();
+        Random random = new XorRNG();
         try
         {
             bd = new BrickDungeon1D(80, 24, random, new FileInputStream(
