@@ -21,6 +21,15 @@ public class DungeonTest
             bd = new BrickDungeon(80, 24, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
             hbd = new HerringboneDungeon(39, 40, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
             rbd = new RunningBondDungeon(133, 23, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+
+            bd = new BrickDungeon(80, 24, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+            hbd = new HerringboneDungeon(39, 40, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+            rbd = new RunningBondDungeon(133, 23, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+
+            bd = new BrickDungeon(80, 24, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+            hbd = new HerringboneDungeon(39, 40, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+            rbd = new RunningBondDungeon(133, 23, new RNG(), new FileInputStream(new File("resources/centeredHoriz.txt")), new FileInputStream(new File("resources/centeredVert.txt")));
+            
             System.out.println(bd);
             System.out.println();
             System.out.println(hbd);

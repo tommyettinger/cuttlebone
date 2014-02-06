@@ -25,45 +25,18 @@ public class RunningBondDungeon
     public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(128);
     private Scanner horizScanner;
     public ArrayList<char[][]> tilesHoriz = new ArrayList<char[][]>(128);
+    public static ArrayList<char[][]> tilesVertShared = null,
+            tilesHorizShared = null;
     private char[][] shown;
     public int wide;
     public int high;
     public boolean colorful;
     private RNG rng;
     
-    public RunningBondDungeon()
-    {
-        this(20, 80);
-    }
-    
-    public RunningBondDungeon(int wide, int high)
-    {
-        this(wide, high, new RNG());
-    }
-    
-    public RunningBondDungeon(int wide, int high, RNG random)
-    {
-        this(wide, high, random, null, null);
-    }
-    
-    public RunningBondDungeon(int wide, int high, InputStream horizStream,
-            InputStream vertStream)
-    {
-        this(wide, high, new RNG(), horizStream, vertStream);
-    }
-    
-    public RunningBondDungeon(int wide, int high, RNG random,
-            InputStream horizStream, InputStream vertStream)
-    {
-        this(wide, high, random, horizStream, vertStream, false);
-    }
-    
-    public RunningBondDungeon(int wide, int high, RNG random,
-            InputStream horizStream, InputStream vertStream, boolean colorful)
+    private void loadStreams(InputStream horizStream, InputStream vertStream)
     {
         if (horizStream == null) horizStream = horizontalStream;
         if (vertStream == null) vertStream = verticalStream;
-        this.colorful = colorful;
         vertScanner = new Scanner(vertStream);
         vertScanner.useDelimiter("\r?\n\r?\n");
         horizScanner = new Scanner(horizStream);
@@ -106,9 +79,47 @@ public class RunningBondDungeon
                 horizScanner.close();
             }
         }
-        
+    }
+    
+    public RunningBondDungeon()
+    {
+        this(20, 80);
+    }
+    
+    public RunningBondDungeon(int wide, int high)
+    {
+        this(wide, high, new RNG());
+    }
+    
+    public RunningBondDungeon(int wide, int high, RNG random)
+    {
+        this(wide, high, random, null, null);
+    }
+    
+    public RunningBondDungeon(int wide, int high, InputStream horizStream,
+            InputStream vertStream)
+    {
+        this(wide, high, new RNG(), horizStream, vertStream);
+    }
+    
+    public RunningBondDungeon(int wide, int high, RNG random,
+            InputStream horizStream, InputStream vertStream)
+    {
+        this(wide, high, random, horizStream, vertStream, false);
+    }
+    
+    public RunningBondDungeon(int wide, int high, RNG random,
+            InputStream horizStream, InputStream vertStream, boolean colorful)
+    {
+        if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
+        {
+            loadStreams(horizStream, vertStream);
+            tilesVertShared = tilesVert;
+            tilesHorizShared = tilesHoriz;
+        }
         this.wide = wide;
         this.high = high;
+        this.colorful = colorful;
         rng = random;
         // char[][] base = herringbonesHoriz[rng.between(0,
         // herringbonesHoriz.length - 1)];
@@ -129,11 +140,12 @@ public class RunningBondDungeon
         int filled = 0;
         while ((nextFillY >= 0))
         {
-            if ((filled < numToFill) && (nextFillX < 20 + wide) && (nextFillX > 0) && (nextFillY > 0))
+            if ((filled < numToFill) && (nextFillX < 20 + wide)
+                    && (nextFillX > 0) && (nextFillY > 0))
             {
-
-                char[][] horiz = tilesHoriz.get(rng.between(0,
-                        tilesHoriz.size() - 1));
+                
+                char[][] horiz = tilesHorizShared.get(rng.between(0,
+                        tilesHorizShared.size() - 1));
                 int randColor = (colorful) ? random.between(1, 6) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
@@ -142,8 +154,8 @@ public class RunningBondDungeon
                         outer[nextFillX + i][nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
                     }
                 }
-                horiz = tilesHoriz.get(rng.between(0,
-                        tilesHoriz.size() - 1));
+                horiz = tilesHorizShared.get(rng.between(0,
+                        tilesHorizShared.size() - 1));
                 randColor = (colorful) ? random.between(1, 6) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
@@ -153,7 +165,8 @@ public class RunningBondDungeon
                     }
                 }
             }
-            if ((20 + nextFillX) % (wide + 30) < nextFillX || filled >= numToFill)
+            if ((20 + nextFillX) % (wide + 30) < nextFillX
+                    || filled >= numToFill)
             {
                 nextFillY -= 10;
                 startingDedent = (startingDedent - 10);
@@ -174,11 +187,12 @@ public class RunningBondDungeon
         filled = 0;
         while ((nextFillX >= 0))
         {
-            if ((filled < numToFill) && (nextFillY < 20 + high) && (nextFillX > 0) && (nextFillY > 0))
+            if ((filled < numToFill) && (nextFillY < 20 + high)
+                    && (nextFillX > 0) && (nextFillY > 0))
             {
-
-                char[][] vert = tilesVert.get(rng.between(0,
-                        tilesVert.size() - 1));
+                
+                char[][] vert = tilesVertShared.get(rng.between(0,
+                        tilesVertShared.size() - 1));
                 int randColor = (colorful) ? random.between(11, 16) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
@@ -187,8 +201,8 @@ public class RunningBondDungeon
                         outer[nextFillX + i][nextFillY + j] = (char) ((int) (vert[i][j]) + randColor);
                     }
                 }
-                vert = tilesVert.get(rng.between(0,
-                        tilesVert.size() - 1));
+                vert = tilesVertShared.get(rng.between(0,
+                        tilesVertShared.size() - 1));
                 randColor = (colorful) ? random.between(11, 16) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
@@ -198,7 +212,8 @@ public class RunningBondDungeon
                     }
                 }
             }
-            if ((20 + nextFillY) % (high + 20) < nextFillY || filled >= numToFill)
+            if ((20 + nextFillY) % (high + 20) < nextFillY
+                    || filled >= numToFill)
             {
                 nextFillX -= 10;
                 startingDedent = (startingDedent - 10);
@@ -225,15 +240,6 @@ public class RunningBondDungeon
                 }
             }
         }
-        try
-        {
-            horizStream.close();
-            vertStream.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        
         
     }
     
@@ -285,28 +291,27 @@ public class RunningBondDungeon
             {
                 if (colorful)
                 {
-                    if(currentColor != (30 + (shown[i][j] / 128)) && ((int)shown[i][j] / 128) != 0)
+                    if (currentColor != (30 + (shown[i][j] / 128))
+                            && ((int) shown[i][j] / 128) != 0)
                     {
-                        s.append("\u001B[0m\u001B[" + (30 + (shown[i][j] / 128)) + "m");
+                        s.append("\u001B[0m\u001B["
+                                + (30 + (shown[i][j] / 128)) + "m");
                         currentColor = (30 + (shown[i][j] / 128));
-                    }
-                    else if(((int)shown[i][j] / 128) == 0)
+                    } else if (((int) shown[i][j] / 128) == 0)
                     {
                         s.append("\u001B[0m");
                         currentColor = 0;
                     }
                     s.append((char) (shown[i][j] % 128));
-                }
-                else
+                } else
                 {
                     s.append(shown[i][j]);
                 }
             }
             s.append('\n');
         }
-
-        if (colorful)
-            s.append("\u001B[0m");
+        
+        if (colorful) s.append("\u001B[0m");
         return s.toString();
     }
 }

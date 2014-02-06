@@ -22,14 +22,63 @@ public class HerringboneDungeon
     private InputStream horizontalStream = getClass().getResourceAsStream(
             "/herringbonesHoriz.txt");
     private Scanner vertScanner;
-    public ArrayList<char[][]> herringbonesVert = new ArrayList<char[][]>(128);
+    public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(128);
     private Scanner horizScanner;
-    public ArrayList<char[][]> herringbonesHoriz = new ArrayList<char[][]>(128);
+    public ArrayList<char[][]> tilesHoriz = new ArrayList<char[][]>(128);
     private char[][] shown;
     public int wide;
     public int high;
     public boolean colorful;
     private RNG rng;
+    public static ArrayList<char[][]> tilesVertShared = null,
+            tilesHorizShared = null;
+    private void loadStreams(InputStream horizStream, InputStream vertStream)
+    {
+        if (horizStream == null) horizStream = horizontalStream;
+        if (vertStream == null) vertStream = verticalStream;
+        vertScanner = new Scanner(vertStream);
+        vertScanner.useDelimiter("\r?\n\r?\n");
+        horizScanner = new Scanner(horizStream);
+        horizScanner.useDelimiter("\r?\n\r?\n");
+        try
+        {
+            while (vertScanner.hasNext())
+            {
+                String[] nx = vertScanner.next().split("\r?\n");
+                char[][] curr = new char[nx.length][nx[0].length()];
+                for (int i = 0; i < nx.length; i++)
+                {
+                    curr[i] = nx[i].toCharArray();
+                }
+                tilesVert.add(curr);
+            }
+        } finally
+        {
+            if (vertScanner != null)
+            {
+                vertScanner.close();
+            }
+        }
+        try
+        {
+            while (horizScanner.hasNext())
+            {
+                String[] nx = horizScanner.next().split("\r?\n");
+                char[][] curr = new char[nx.length][nx[0].length()];
+                for (int i = 0; i < nx.length; i++)
+                {
+                    curr[i] = nx[i].toCharArray();
+                }
+                tilesHoriz.add(curr);
+            }
+        } finally
+        {
+            if (horizScanner != null)
+            {
+                horizScanner.close();
+            }
+        }
+    }
     
     public HerringboneDungeon()
     {
@@ -61,51 +110,13 @@ public class HerringboneDungeon
     public HerringboneDungeon(int wide, int high, RNG random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
-        if (horizStream == null) horizStream = horizontalStream;
-        if (vertStream == null) vertStream = verticalStream;
+        if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
+        {
+            loadStreams(horizStream, vertStream);
+            tilesVertShared = tilesVert;
+            tilesHorizShared = tilesHoriz;
+        }
         this.colorful = colorful;
-        vertScanner = new Scanner(vertStream);
-        vertScanner.useDelimiter("\r?\n\r?\n");
-        horizScanner = new Scanner(horizStream);
-        horizScanner.useDelimiter("\r?\n\r?\n");
-        try
-        {
-            while (vertScanner.hasNext())
-            {
-                String[] nx = vertScanner.next().split("\r?\n");
-                char[][] curr = new char[nx.length][nx[0].length()];
-                for (int i = 0; i < nx.length; i++)
-                {
-                    curr[i] = nx[i].toCharArray();
-                }
-                herringbonesVert.add(curr);
-            }
-        } finally
-        {
-            if (vertScanner != null)
-            {
-                vertScanner.close();
-            }
-        }
-        try
-        {
-            while (horizScanner.hasNext())
-            {
-                String[] nx = horizScanner.next().split("\r?\n");
-                char[][] curr = new char[nx.length][nx[0].length()];
-                for (int i = 0; i < nx.length; i++)
-                {
-                    curr[i] = nx[i].toCharArray();
-                }
-                herringbonesHoriz.add(curr);
-            }
-        } finally
-        {
-            if (horizScanner != null)
-            {
-                horizScanner.close();
-            }
-        }
         
         this.wide = wide;
         this.high = high;
@@ -126,8 +137,8 @@ public class HerringboneDungeon
         int startingIndent = 0;
         while ((nextFillX < wide + 40) && ((nextFillY < 30 + high)))
         {
-            char[][] horiz = herringbonesHoriz.get(rng.between(0,
-                    herringbonesHoriz.size() - 1));
+            char[][] horiz = tilesHorizShared.get(rng.between(0,
+                    tilesHorizShared.size() - 1));
             int randColor = (colorful) ? random.between(1, 7) * 128 : 0;
             if ((nextFillX < 20 + wide) && ((nextFillY < 30 + high)))
             {
@@ -175,8 +186,8 @@ public class HerringboneDungeon
         nextFillX = 0;
         while (nextFillX <= wide + 30)
         {
-            char[][] vert = herringbonesVert.get(rng.between(0,
-                    herringbonesVert.size() - 1));
+            char[][] vert = tilesVertShared.get(rng.between(0,
+                    tilesVertShared.size() - 1));
             int randColor = (colorful) ? random.between(10, 16) * 128 : 0;
             if ((nextFillX < wide + 30) && ((nextFillY < high + 30)))
             {
@@ -231,14 +242,6 @@ public class HerringboneDungeon
                     shown[i][j] = outer[i + 25][j + 25];
                 }
             }
-        }
-        try
-        {
-            horizStream.close();
-            vertStream.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
     
