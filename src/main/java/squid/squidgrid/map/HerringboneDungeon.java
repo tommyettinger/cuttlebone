@@ -112,11 +112,11 @@ public class HerringboneDungeon
         rng = random;
         // char[][] base = herringbonesHoriz[rng.between(0,
         // herringbonesHoriz.length - 1)];
-        char[][] outer = new char[wide + 40][high + 40];
+        char[][] outer = new char[wide + 50][high + 50];
         this.shown = new char[wide][high];
-        for (int i = 0; i < wide + 40; i++)
+        for (int i = 0; i < wide + 50; i++)
         {
-            for (int j = 0; j < high + 40; j++)
+            for (int j = 0; j < high + 50; j++)
             {
                 outer[i][j] = '#';
             }
@@ -228,7 +228,7 @@ public class HerringboneDungeon
                     shown[i][j] = '#';
                 } else
                 {
-                    shown[i][j] = outer[i + 20][j + 20];
+                    shown[i][j] = outer[i + 25][j + 25];
                 }
             }
         }

@@ -108,11 +108,11 @@ public class BrickDungeon
         rng = random;
         // char[][] base = herringbonesHoriz[rng.between(0,
         // herringbonesHoriz.length - 1)];
-        char[][] outer = new char[wide + 20][high];
+        char[][] outer = new char[wide + 20][high + 10];
         this.shown = new char[wide][high];
         for (int i = 0; i < wide + 20; i++)
         {
-            for (int j = 0; j < high; j++)
+            for (int j = 0; j < high + 10; j++)
             {
                 outer[i][j] = '#';
             }
@@ -125,7 +125,7 @@ public class BrickDungeon
             char[][] horiz = herringbonesHoriz.get(rng.between(0,
                     herringbonesHoriz.size() - 1));
             int randColor = (colorful) ? random.between(1, 7) * 128 : 0;
-            if ((nextFillX < 20 + wide) && ((nextFillY < high)))
+            if ((nextFillX < wide) && ((nextFillY < high)))
             {
                 for (int i = 0; i < 20; i++)
                 {

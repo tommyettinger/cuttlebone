@@ -122,19 +122,19 @@ public class RunningBondDungeon
             }
         }
         int nextFillX, startingFillX, startingDedent;
-        startingDedent = nextFillX = startingFillX = (wide / 2) + 0;
+        startingDedent = nextFillX = startingFillX = (wide / 2);
         int nextFillY, startingFillY;
         nextFillY = startingFillY = (high / 2) + 10;
         int numToFill = 1;
         int filled = 0;
-        while ((nextFillY > 0))
+        while ((nextFillY >= 0))
         {
-            if ((filled < numToFill) && (nextFillX < 40 + wide) && (nextFillX > 0) && (nextFillY > 0))
+            if ((filled < numToFill) && (nextFillX < 20 + wide) && (nextFillX > 0) && (nextFillY > 0))
             {
 
                 char[][] horiz = tilesHoriz.get(rng.between(0,
                         tilesHoriz.size() - 1));
-                int randColor = (colorful) ? random.between(1, 7) * 128 : 0;
+                int randColor = (colorful) ? random.between(1, 6) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 10; j++)
@@ -144,16 +144,16 @@ public class RunningBondDungeon
                 }
                 horiz = tilesHoriz.get(rng.between(0,
                         tilesHoriz.size() - 1));
-                randColor = (colorful) ? random.between(1, 7) * 128 : 0;
+                randColor = (colorful) ? random.between(1, 6) * 128 : 0;
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 10; j++)
                     {
-                        outer[nextFillX + i][high + 10 - nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
+                        outer[nextFillX + i][high + 30 - nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
                     }
                 }
             }
-            if ((20 + nextFillX) % (wide + 30) < nextFillX)
+            if ((20 + nextFillX) % (wide + 30) < nextFillX || filled >= numToFill)
             {
                 nextFillY -= 10;
                 startingDedent = (startingDedent - 10);
@@ -166,20 +166,20 @@ public class RunningBondDungeon
                 filled++;
             }
         }
-
+        
         nextFillX = startingFillX = (wide / 2) - 10;
         startingDedent = nextFillY = startingFillY = (high / 2) + 10;
         
         numToFill = 1;
         filled = 0;
-        while ((nextFillX > 0))
+        while ((nextFillX >= 0))
         {
-            if ((filled < numToFill) && (nextFillY < 30 + high) && (nextFillX > 0) && (nextFillY > 0))
+            if ((filled < numToFill) && (nextFillY < 20 + high) && (nextFillX > 0) && (nextFillY > 0))
             {
 
                 char[][] vert = tilesVert.get(rng.between(0,
                         tilesVert.size() - 1));
-                int randColor = (colorful) ? random.between(10, 16) * 128 : 0;
+                int randColor = (colorful) ? random.between(11, 16) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -189,7 +189,7 @@ public class RunningBondDungeon
                 }
                 vert = tilesVert.get(rng.between(0,
                         tilesVert.size() - 1));
-                randColor = (colorful) ? random.between(10, 16) * 128 : 0;
+                randColor = (colorful) ? random.between(11, 16) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -198,7 +198,7 @@ public class RunningBondDungeon
                     }
                 }
             }
-            if ((20 + nextFillY) % (high + 20) < nextFillY)
+            if ((20 + nextFillY) % (high + 20) < nextFillY || filled >= numToFill)
             {
                 nextFillX -= 10;
                 startingDedent = (startingDedent - 10);
@@ -212,7 +212,6 @@ public class RunningBondDungeon
             }
         }
         
-        
         for (int i = 0; i < wide; i++)
         {
             for (int j = 0; j < high; j++)
@@ -222,7 +221,7 @@ public class RunningBondDungeon
                     shown[i][j] = '#';
                 } else
                 {
-                    shown[i][j] = outer[i + 10][j + 10];
+                    shown[i][j] = outer[i + 10][j + 20];
                 }
             }
         }
