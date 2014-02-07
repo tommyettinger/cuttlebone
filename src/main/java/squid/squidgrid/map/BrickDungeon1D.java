@@ -15,9 +15,9 @@ import squid.squidmath.RNG;
 public class BrickDungeon1D
 {
     private Scanner vertScanner;
-    public ArrayList<char[]> tilesVert = new ArrayList<char[]>(128);
+    //public ArrayList<char[]> tilesVert = new ArrayList<char[]>(64);
     private Scanner horizScanner;
-    public ArrayList<char[]> tilesHoriz = new ArrayList<char[]>(128);
+    //public ArrayList<char[]> tilesHoriz = new ArrayList<char[]>(64);
     private char[] shown;
     public int wide;
     public int high;
@@ -35,12 +35,14 @@ public class BrickDungeon1D
         vertScanner.useDelimiter("\r?\n\r?\n");
         horizScanner = new Scanner(horizStream);
         horizScanner.useDelimiter("\r?\n\r?\n");
+        tilesVertShared = new ArrayList<char[]>(64);
+        tilesHorizShared = new ArrayList<char[]>(64);
         try
         {
             while (vertScanner.hasNext())
             {
                 char[] nx = vertScanner.next().replace("\r\n", "").replace("\n", "").toCharArray();
-                tilesVert.add(nx);
+                tilesVertShared.add(nx);
             }
         } finally
         {
@@ -54,7 +56,7 @@ public class BrickDungeon1D
             while (horizScanner.hasNext())
             {
                 char[] nx = horizScanner.next().replace("\r\n", "").replace("\n", "").toCharArray();
-                tilesHoriz.add(nx);
+                tilesHorizShared.add(nx);
             }
         } finally
         {
@@ -99,8 +101,8 @@ public class BrickDungeon1D
         if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
         {
             loadStreams(horizStream, vertStream);
-            tilesVertShared = tilesVert;
-            tilesHorizShared = tilesHoriz;
+            //tilesVertShared = tilesVert;
+            //tilesHorizShared = tilesHoriz;
         }
         this.colorful = colorful;
         
