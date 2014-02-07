@@ -19,9 +19,9 @@ import squid.squidmath.RNG;
 public class HerringboneDungeon
 {
     private Scanner vertScanner;
-    //public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(64);
+    // public ArrayList<char[][]> tilesVert = new ArrayList<char[][]>(64);
     private Scanner horizScanner;
-    //public ArrayList<char[][]> tilesHoriz = new ArrayList<char[][]>(64);
+    // public ArrayList<char[][]> tilesHoriz = new ArrayList<char[][]>(64);
     private char[][] shown;
     public int wide;
     public int high;
@@ -29,12 +29,15 @@ public class HerringboneDungeon
     private Random rng;
     public static ArrayList<char[][]> tilesVertShared = null,
             tilesHorizShared = null;
+    
     private void loadStreams(InputStream horizStream, InputStream vertStream)
     {
-        if (horizStream == null) horizStream = getClass().getResourceAsStream(
-                "/herringbonesHoriz.txt");
-        if (vertStream == null) vertStream = getClass().getResourceAsStream(
-                "/herringbonesVert.txt");
+        if (horizStream == null)
+            horizStream = getClass().getResourceAsStream(
+                    "/herringbonesHoriz.txt");
+        if (vertStream == null)
+            vertStream = getClass()
+                    .getResourceAsStream("/herringbonesVert.txt");
         vertScanner = new Scanner(vertStream);
         vertScanner.useDelimiter("\r?\n\r?\n");
         horizScanner = new Scanner(horizStream);
@@ -111,136 +114,125 @@ public class HerringboneDungeon
     public HerringboneDungeon(int wide, int high, Random random,
             InputStream horizStream, InputStream vertStream, boolean colorful)
     {
-        if ((tilesVertShared == null && tilesVertShared == null) || (horizStream != null || vertStream != null))
+        if ((tilesVertShared == null && tilesVertShared == null)
+                || (horizStream != null || vertStream != null))
         {
             loadStreams(horizStream, vertStream);
-            //tilesVertShared = tilesVert;
-            //tilesHorizShared = tilesHoriz;
+            // tilesVertShared = tilesVert;
+            // tilesHorizShared = tilesHoriz;
         }
         this.colorful = colorful;
         
         this.wide = wide;
         this.high = high;
         rng = random;
-        // char[][] base = herringbonesHoriz[rng.between(0,
-        // herringbonesHoriz.length - 1)];
-        char[][] outer = new char[wide + 50][high + 50];
+        
         this.shown = new char[wide][high];
-        for (int i = 0; i < wide + 50; i++)
+        
+        int tileWidth = 10;
+        int tileHeight = 20;
+        
+        int startX = 0;
+        int startY = 0;
+        while (startX < wide)
         {
-            for (int j = 0; j < high + 50; j++)
+            int x = startX;
+            int y = -startY;
+            while (y < high)
             {
-                outer[i][j] = '#';
-            }
-        }
-        int nextFillX = 0;
-        int nextFillY = 0;
-        int startingIndent = 0;
-        while ((nextFillX < wide + 40) && ((nextFillY < 30 + high)))
-        {
-            char[][] horiz = tilesHorizShared.get(rng.nextInt(tilesHorizShared.size()));
-            int randColor = (colorful) ? (random.nextInt(7)+ 1) * 128 : 0;
-            if ((nextFillX < 20 + wide) && ((nextFillY < 30 + high)))
-            {
-                for (int i = 0; i < 20; i++)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
-                        outer[nextFillX + i][nextFillY + j] = (char) ((int) (horiz[i][j]) + randColor);
-                    }
-                }
-            }
-            int tempNextFill = nextFillX;
-            if ((40 + nextFillX) % (wide + 40) < nextFillX)
-            {
-                switch (startingIndent)
-                {
-                case 0:
-                    nextFillX = 10;
-                    nextFillY += 10;
-                    break;
-                case 1:
-                    nextFillX = 20;
-                    nextFillY += 10;
-                    break;
-                case 2:
-                    nextFillX = 30;
-                    nextFillY += 10;
-                    break;
-                case 3:
-                    nextFillX = 0;
-                    nextFillY += 10;
-                    break;
-                }
-            } else
-            {
-                nextFillX += 40;
-            }
-            if ((tempNextFill + 40) % (wide + 40) < tempNextFill)
-            {
-                startingIndent = (startingIndent + 1) % 4;
-            }
-        }
-        startingIndent = 1;
-        nextFillY = 10;
-        nextFillX = 0;
-        while (nextFillX <= wide + 30)
-        {
-            char[][] vert = tilesVertShared.get(rng.nextInt(tilesVertShared.size()));
-            int randColor = (colorful) ? (random.nextInt(7) + 10) * 128 : 0;
-            if ((nextFillX < wide + 30) && ((nextFillY < high + 30)))
-            {
+                char[][] vert = tilesVertShared.get(rng.nextInt(tilesVertShared
+                        .size()));
+                int randColor = (colorful) ? (random.nextInt(7) + 10) * 128 : 0;
                 for (int i = 0; i < 10; i++)
                 {
-                    for (int j = 0; j < 20; j++)
+                    if (x + i >= 0 && x + i < wide)
                     {
-                        outer[nextFillX + i][nextFillY + j] = (char) ((int) (vert[i][j]) + randColor);
+                        for (int j = 0; j < 20; j++)
+                        {
+                            if (y + j >= 0 && y + j < high)
+                                shown[x + i][y + j] = (char) ((int) (vert[i][j]) + randColor);
+                        }
                     }
                 }
-            }
-            int tempNextFill = nextFillY;
-            if ((nextFillY + 40) % (high + 40) < nextFillY)
-            {
-                switch (startingIndent)
+                x += tileWidth;
+                
+                char[][] horiz = tilesHorizShared.get(rng
+                        .nextInt(tilesHorizShared.size()));
+                randColor = (colorful) ? (random.nextInt(7) + 1) * 128 : 0;
+                for (int i = 0; i < 20; i++)
                 {
-                case 0:
-                    nextFillX += 10;
-                    nextFillY = 10;
-                    break;
-                case 1:
-                    nextFillX += 10;
-                    nextFillY = 20;
-                    break;
-                case 2:
-                    nextFillX += 10;
-                    nextFillY = 30;
-                    break;
-                case 3:
-                    nextFillX += 10;
-                    nextFillY = 0;
-                    break;
+                    if (x + i >= 0 && x + i < wide)
+                    {
+                        for (int j = 0; j < 10; j++)
+                        {
+                            if (y + j >= 0 && y + j < high)
+                                shown[x + i][y + j] = (char) ((int) (horiz[i][j]) + randColor);
+                        }
+                    }
                 }
-            } else
-            {
-                nextFillY += 40;
+                y += tileWidth;
             }
-            if ((tempNextFill + 40) % (high + 40) < tempNextFill)
-            {
-                startingIndent = (startingIndent + 1) % 4;
-            }
+            startX += tileHeight + tileWidth;
+            startY += (tileHeight - tileWidth);
+            startY %= 2 * tileHeight;
         }
+        
+        startX = tileHeight;
+        startY = tileHeight;
+        while (startY < high)
+        {
+            int x = -startX;
+            int y = startY;
+            while (y < high)
+            {
+                char[][] vert = tilesVertShared.get(rng.nextInt(tilesVertShared
+                        .size()));
+                int randColor = (colorful) ? (random.nextInt(7) + 10) * 128 : 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    if (x + i >= 0 && x + i < wide)
+                    {
+                        for (int j = 0; j < 20; j++)
+                        {
+                            if (y + j >= 0 && y + j < high)
+                                shown[x + i][y + j] = (char) ((int) (vert[i][j]) + randColor);
+                        }
+                    }
+                }
+                x += tileWidth;
+                
+                char[][] horiz = tilesHorizShared.get(rng
+                        .nextInt(tilesHorizShared.size()));
+                randColor = (colorful) ? (random.nextInt(7) + 1) * 128 : 0;
+                for (int i = 0; i < 20; i++)
+                {
+                    if (x + i >= 0 && x + i < wide)
+                    {
+                        for (int j = 0; j < 10; j++)
+                        {
+                            if (y + j >= 0 && y + j < high)
+                                shown[x + i][y + j] = (char) ((int) (horiz[i][j]) + randColor);
+                        }
+                    }
+                }
+                y += tileWidth;
+            }
+            startY += tileHeight + tileWidth;
+            startX += (tileHeight - tileWidth);
+            startX %= 2 * tileHeight;
+        }
+        
         for (int i = 0; i < wide; i++)
         {
-            for (int j = 0; j < high; j++)
-            {
-                if (i == 0 || j == 0 || i == wide - 1 || j == high - 1)
-                {
-                    shown[i][j] = '#';
-                } else
-                {
-                    shown[i][j] = outer[i + 25][j + 25];
-                }
-            }
+            shown[i][0] = '#';
+            shown[i][high - 1] = '#';
+            
+        }
+        
+        for (int j = 0; j < high; j++)
+        {
+            shown[0][j] = '#';
+            shown[wide - 1][j] = '#';
         }
     }
     
@@ -292,28 +284,27 @@ public class HerringboneDungeon
             {
                 if (colorful)
                 {
-                    if(currentColor != (30 + (shown[i][j] / 128)) && ((int)shown[i][j] / 128) != 0)
+                    if (currentColor != (30 + (shown[i][j] / 128))
+                            && ((int) shown[i][j] / 128) != 0)
                     {
-                        s.append("\u001B[0m\u001B[" + (30 + (shown[i][j] / 128)) + "m");
+                        s.append("\u001B[0m\u001B["
+                                + (30 + (shown[i][j] / 128)) + "m");
                         currentColor = (30 + (shown[i][j] / 128));
-                    }
-                    else if(((int)shown[i][j] / 128) == 0)
+                    } else if (((int) shown[i][j] / 128) == 0)
                     {
                         s.append("\u001B[0m");
                         currentColor = 0;
                     }
                     s.append((char) (shown[i][j] % 128));
-                }
-                else
+                } else
                 {
                     s.append(shown[i][j]);
                 }
             }
             s.append('\n');
         }
-
-        if (colorful)
-            s.append("\u001B[0m");
+        
+        if (colorful) s.append("\u001B[0m");
         return s.toString();
     }
 }

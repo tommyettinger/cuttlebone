@@ -63,6 +63,13 @@ public class DungeonTest
                 bd2 = new BrickDungeon(133, 43, random, null, null);
                 hbd = new HerringboneDungeon(133, 43, random, null, null);
                 rbd = new RunningBondDungeon(133, 43, random, null, null);
+                
+
+                bd = new BrickDungeon1D(203, 58, random, null, null);
+                bd2 = new BrickDungeon(203, 88, random, null, null);
+                hbd = new HerringboneDungeon(203, 58, random, null, null);
+                rbd = new RunningBondDungeon(203, 88, random, null, null);
+                
                 //System.out.print(bd.get1DShown()[0] + hbd.get1DShown()[0] + rbd.get1DShown()[0]);
             }
 
@@ -70,11 +77,10 @@ public class DungeonTest
             System.out.println();
             System.out.println(bd2);
             System.out.println();
-            /*
             System.out.println(hbd);
             System.out.println();
             System.out.println(rbd);
-            System.out.println();*/
+            System.out.println();
             
         } catch (FileNotFoundException e)
         {
