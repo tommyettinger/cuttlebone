@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.squid</groupId>
+    <groupId>com.github.tommyettinger</groupId>
     <artifactId>cuttlebone</artifactId>
-    <version>1.95.2</version>
+    <version>1.95.3</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -128,7 +128,7 @@
                     <configuration>
                         <debug>true</debug>
                         <minmemory>128m</minmemory>
-                        <maxmemory>1024m</maxmemory>
+                        <maxmemory>256m</maxmemory>
                         <quiet>true</quiet>
                         <doctitle>${project.name} ${project.version}</doctitle>
                         <windowtitle>${project.name} ${project.version}</windowtitle>
@@ -137,10 +137,10 @@
                         <splitindex>true</splitindex>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <links>
-                            <link>http://java.sun.com/j2se/1.6.0/docs/api</link>
-                            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                            <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
-                            <link>http://java.sun.com/j2ee/1.4/docs/api</link>
+                            <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/1.5.0/docs/api/</link>
                         </links>
                         <linksource>true</linksource>
                         <detectOfflineLinks>false</detectOfflineLinks>
