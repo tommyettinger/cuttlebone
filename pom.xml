@@ -3,7 +3,7 @@
 
     <groupId>com.github.tommyettinger</groupId>
     <artifactId>cuttlebone</artifactId>
-    <version>1.95.3</version>
+    <version>1.96.0</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -121,7 +121,6 @@
                                 <goal>test-jar</goal>
                             </goals>
                             <configuration>
-                                <includePom>true</includePom>
                             </configuration>
                         </execution>
                     </executions>
@@ -150,6 +149,12 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <description>A slimmed-down version of Eben Howard's library for dealing with grids, SquidLib, with some added features (like map generation) but with all display code removed.</description>
 </project>

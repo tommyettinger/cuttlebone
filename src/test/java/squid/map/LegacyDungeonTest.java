@@ -5,13 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-import squid.squidgrid.map.BrickDungeon;
-import squid.squidgrid.map.BrickDungeon1D;
-import squid.squidgrid.map.HerringboneDungeon;
-import squid.squidgrid.map.RunningBondDungeon;
+import squid.squidgrid.map.legacy.BrickDungeon;
+import squid.squidgrid.map.legacy.BrickDungeon1D;
+import squid.squidgrid.map.legacy.HerringboneDungeon;
+import squid.squidgrid.map.legacy.RunningBondDungeon;
 import squid.squidmath.XorRNG;
 
-public class DungeonTest
+public class LegacyDungeonTest
 {
     
     public static void main(String[] args)

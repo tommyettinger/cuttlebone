@@ -1,4 +1,4 @@
-package squid.squidgrid.map;
+package squid.squidgrid.map.legacy;
 
 import java.io.IOException;
 import java.io.InputStream;
