@@ -43,6 +43,13 @@ public class DungeonGen {
         this.dungeon = dungeon;
     }
 
+    public char get(int y, int x) {
+        return dungeon[y][x];
+    }
+    public void put(char elem, int y, int x) {
+        this.dungeon[y][x] = elem;
+    }
+
     public char[][] dungeon;
     /**
      * Constructs a DungeonGen that uses the given RNG.
@@ -276,7 +283,7 @@ public class DungeonGen {
         for (int i = 0; i < map[0].length; i++)
         {
             map[0][i] = '#';
-            map[upperX][i] = '#';
+            map[upperY][i] = '#';
         }
         return map;
     }
@@ -297,7 +304,7 @@ public class DungeonGen {
         for (int i = 0; i < wide; i++)
         {
             dungeon[0][i] = '#';
-            dungeon[upperX][i] = '#';
+            dungeon[upperY][i] = '#';
         }
         return dungeon;
     }
