@@ -73,6 +73,29 @@ public class Point3D extends Point2D {
         return Math.max(Math.max(Math.abs(x - other.x), Math.abs(y - other.y)), Math.abs(z - other.z));
     }
 
+    /**
+     * Adds the x, y, and z components of this Point3D and another, then returns the result
+     * as a new Point3D.
+     *
+     * @param other
+     * @return
+     */
+    public Point3D add(Point3D other) {
+        return new Point3D(this.x + other.x, this.y + other.y, this.z + other.z);
+    }
+    /**
+     * Adds the x, y, and z components of this Point3D with the x, y, and z parameters,
+     * then returns the result as a new Point3D.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public Point3D add(int x, int y, int z) {
+        return new Point3D(this.x + x, this.y + y, this.z + z);
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;

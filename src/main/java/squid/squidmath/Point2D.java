@@ -12,7 +12,7 @@ public class Point2D {
 	public int y;
 	
     /**
-     * Creates a three dimensional coordinate with the given location.
+     * Creates a two dimensional coordinate with the given location.
      * 
      * @param x
      * @param y
@@ -24,9 +24,9 @@ public class Point2D {
 
     /**
      * Returns the linear distance between this coordinate point and the provided one.
-     * 
+     *
      * @param other
-     * @return 
+     * @return
      */
     public double distance(Point2D other) {
         return Math.sqrt(squareDistance(other));
@@ -67,6 +67,28 @@ public class Point2D {
      */
     public int maxAxisDistance(Point2D other) {
         return Math.max(Math.abs(x - other.x), Math.abs(y - other.y));
+    }
+
+    /**
+     * Adds the x and y components of this Point2D and another, then returns the result
+     * as a new Point2D.
+     *
+     * @param other
+     * @return
+     */
+    public Point2D add(Point2D other) {
+        return new Point2D(this.x + other.x, this.y + other.y);
+    }
+    /**
+     * Adds the x and y components of this Point2D with the x and y parameters,
+     * then returns the result as a new Point2D.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public Point2D add(int x, int y) {
+        return new Point2D(this.x + x, this.y + y);
     }
 
     @Override

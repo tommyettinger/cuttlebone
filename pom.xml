@@ -3,7 +3,7 @@
 
     <groupId>com.github.tommyettinger</groupId>
     <artifactId>cuttlebone</artifactId>
-    <version>1.96.1</version>
+    <version>1.97.0</version>
     <packaging>jar</packaging>
 
     <parent>

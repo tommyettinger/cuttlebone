@@ -1,14 +1,56 @@
 package squid.squidgrid.map;
 
+import squid.squidmath.Point2D;
+
+import java.util.Random;
+
 /**
  * Created by Tommy Ettinger on 4/1/2015.
  */
-public class DungeonUtils {
-    public static char[][] HashesToLines(char[][] map)
+public class DungeonUtility {
+    public static Point2D randomFloor(char[][] map, Random rng)
+    {
+        int width = map.length;
+        int height = map[0].length;
+        if(width < 3 || height < 3)
+            return null;
+        Point2D pt = new Point2D(rng.nextInt(width), rng.nextInt(height));
+        for(int i = 0; i < 20; i++)
+        {
+            if(map[pt.x][pt.y] == '.')
+            {
+                return pt;
+            }
+            else
+            {
+                pt.x = rng.nextInt(width);
+                pt.y = rng.nextInt(height);
+            }
+        }
+        pt.x = 1;
+        pt.y = 1;
+        if(map[pt.x][pt.y] == '.')
+            return pt;
+
+        while(map[pt.x][pt.y] != '.')
+        {
+            pt.x += 1;
+            if(pt.x >= width - 1)
+            {
+                pt.x = 1;
+                pt.y += 1;
+            }
+            if(pt.y >= height - 1)
+                return null;
+        }
+        return pt;
+    }
+
+    public static char[][] hashesToLines(char[][] map)
     {
         int Width = map[0].length+2;
         int Height = map.length+2;
-        
+
         char[][] neo = new char[Height][Width], dungeon = new char[Height][Width];
         for(int i = 1; i < Height - 1; i++)
         {
@@ -17,7 +59,7 @@ public class DungeonUtils {
                 dungeon[i][j] = map[i-1][j-1];
             }
         }
-            for(int i = 0; i < Height; i++)
+        for(int i = 0; i < Height; i++)
         {
             neo[i][0] = '\1';
             neo[i][Width-1] = '\1';
@@ -165,7 +207,7 @@ public class DungeonUtils {
                 }
                 else
                 {
-                        neo[y][x] = dungeon[y][x];
+                    neo[y][x] = dungeon[y][x];
                 }
             }
         }
@@ -180,9 +222,9 @@ public class DungeonUtils {
                     if (neo[y - 1][x] == '┼' || neo[y - 1][x] == '├' || neo[y - 1][x] == '┤' || neo[y - 1][x] == '┬')
                     {
                         if ((x >= Width - 1 || dungeon[y - 1][x + 1] == '#' || dungeon[y - 1][x + 1] == '\1') &&
-                        (x <= 0 || dungeon[y - 1][x - 1] == '#' || dungeon[y - 1][x - 1] == '\1') &&
-                        (x >= Width - 1 || dungeon[y][x + 1] == '#' || dungeon[y][x + 1] == '\1') &&
-                        (x <= 0 || dungeon[y][x - 1] == '#' || dungeon[y][x - 1] == '\1'))
+                                (x <= 0 || dungeon[y - 1][x - 1] == '#' || dungeon[y - 1][x - 1] == '\1') &&
+                                (x >= Width - 1 || dungeon[y][x + 1] == '#' || dungeon[y][x + 1] == '\1') &&
+                                (x <= 0 || dungeon[y][x - 1] == '#' || dungeon[y][x - 1] == '\1'))
                         {
                             switch (neo[y][x])
                             {
@@ -231,9 +273,9 @@ public class DungeonUtils {
                     if (neo[y][x - 1] == '┼' || neo[y][x - 1] == '├' || neo[y][x - 1] == '┬' || neo[y][x - 1] == '┴')
                     {
                         if ((y >= Height - 1 || x >= Width - 1 || dungeon[y + 1][x - 1] == '#' || dungeon[y + 1][x - 1] == '\1') &&
-                        (y <= 0 || dungeon[y - 1][x - 1] == '#' || dungeon[y - 1][x - 1] == '\1') &&
-                        (y >= Height - 1 || dungeon[y + 1][x] == '#' || dungeon[y + 1][x] == '\1') &&
-                        (y <= 0 || dungeon[y - 1][x] == '#' || dungeon[y - 1][x] == '\1'))
+                                (y <= 0 || dungeon[y - 1][x - 1] == '#' || dungeon[y - 1][x - 1] == '\1') &&
+                                (y >= Height - 1 || dungeon[y + 1][x] == '#' || dungeon[y + 1][x] == '\1') &&
+                                (y <= 0 || dungeon[y - 1][x] == '#' || dungeon[y - 1][x] == '\1'))
                         {
                             switch (neo[y][x])
                             {
@@ -276,10 +318,61 @@ public class DungeonUtils {
         {
             for(int j = 1; j < Width - 1; j++)
             {
-                if(neo[i][j] == '\1')
-                    portion[i-1][j-1] = ' ';
-                else
-                    portion[i-1][j-1] = neo[i][j];
+                switch (neo[i][j])
+                {
+                    case '\1':
+                        portion[i - 1][j - 1] = ' ';
+                        break;
+                    default: // ┼┌┘
+                        portion[i - 1][j - 1] = neo[i][j];
+                }
+            }
+        }
+        return transposeLines(portion);
+    }
+    public static char[][] transposeLines(char[][] map)
+    {
+
+        int Width = map[0].length;
+        int Height = map.length;
+        char[][] portion = new char[Height][Width];
+        for(int i = 0; i < Height; i++)
+        {
+            for(int j = 0; j < Width; j++)
+            {
+                switch (map[i][j])
+                {
+                    case '\1':
+                        portion[i][j] = ' ';
+                        break;
+                    case '├':
+                        portion[i][j] = '┬';
+                        break;
+                    case '┤':
+                        portion[i][j] = '┴';
+                        break;
+                    case '┴':
+                        portion[i][j] = '┤';
+                        break;
+                    case '┬':
+                        portion[i][j] = '├';
+                        break;
+                    case '┐':
+                        portion[i][j] = '└';
+                        break;
+                    case '└':
+                        portion[i][j] = '┐';
+                        break;
+                    case '│':
+                        portion[i][j] = '─';
+                        break;
+                    case '─':
+                        portion[i][j] = '│';
+                        break;
+//                    case '├ ┤ ┴ ┬ ┌ ┐ └ ┘ │ ─':
+                    default: // ┼┌┘
+                        portion[i][j] = map[i][j];
+                }
             }
         }
         return portion;

@@ -3,8 +3,7 @@ package squid.squidgrid.map.styled;
 /**
  * Created by Tommy Ettinger on 3/10/2015.
  */
-public enum TilesetType
-{
+public enum TilesetType {
     DEFAULT_DUNGEON,
     CAVES_LIMIT_CONNECTIVITY,
     CAVES_TINY_CORRIDORS,
