@@ -12,6 +12,7 @@ public class DungeonGenTest
         DungeonGen bg = new DungeonGen(new XorRNG(0x1337deadbeef5c00l));
         for(TilesetType tt : TilesetType.values())
         {
+            System.out.println(tt.toString());
             bg.generate(tt, 80, 80);
             bg.wallWrap();
             System.out.println(bg);
