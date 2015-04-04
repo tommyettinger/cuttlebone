@@ -267,8 +267,8 @@ public class Dijkstra {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if (combinedMap[y][x] == FLOOR) {
-                    combinedMap[y][x] = DARK;
+                if (combinedMap[x][y] == FLOOR) {
+                    combinedMap[x][y] = DARK;
                 }
             }
         }

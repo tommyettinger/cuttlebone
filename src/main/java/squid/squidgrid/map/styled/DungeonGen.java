@@ -43,6 +43,8 @@ public class DungeonGen {
 
     public void setDungeon(char[][] dungeon) {
         this.dungeon = dungeon;
+        this.wide = dungeon.length;
+        this.high = dungeon[0].length;
     }
 
     public char get(int x, int y) {
@@ -53,7 +55,7 @@ public class DungeonGen {
         this.dungeon[x][y] = elem;
     }
 
-    public char[][] dungeon;
+    private char[][] dungeon;
 
     /**
      * Constructs a DungeonGen that uses the given RNG.
